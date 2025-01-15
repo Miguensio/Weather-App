@@ -3,3 +3,7 @@
     height: 200px;
     object-fit: contain;
 }
+
+.App{
+    font-family: sans-serif;
+}

@@ -1,7 +1,9 @@
 import './App.css';
+import "./stylesheets/input.css";
 import React, { useState, useEffect } from 'react';
 import Header from './components/header.js';
 import Weather from './components/weather.js';
+import Input from './components/input.js';
 
 function App() {
 
@@ -76,6 +78,7 @@ function App() {
   return (
     <div className="App">
       <Header />
+      <Input />
       <Weather
         country={country}
         temperature={temperature}
