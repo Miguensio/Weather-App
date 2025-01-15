@@ -70,7 +70,7 @@ function App() {
     let weekDay = daysWeek[date.getDay()];
     let day = date.getDate();
 
-    setDate(`${day} ${weekDay} ${monthName}`);
+    setDate(`${weekDay}, ${monthName} ${day}`);
   }
 
   const getTemperature = (url) => {
