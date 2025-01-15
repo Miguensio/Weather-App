@@ -18,6 +18,29 @@ function App() {
   const [feels_like, setFeelsLike] = useState('');
   const [weather, setWeather] = useState('');
 
+  const handleCity = (cityValue) => {
+    getLatLonUser(cityValue);
+  }
+
+  const getLatLonUser = (cityValue) => {
+    fetch(`http://api.openweathermap.org/geo/1.0/direct?q=${cityValue}&limit=1&appid=${apiKey}`)
+    .then(response => response.json())
+    .then(data => {
+      console.log(data);
+      
+      let country = data[0].country;
+      let city = data[0].name;
+      let lat = data[0].lat;
+      let lon = data[0].lon;
+
+      setCountry(`${city} ${country}`);
+
+      getTemperature(`https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lon}&appid=${apiKey}&units=metric`);
+
+    })
+    .catch(error => console.log(error))
+  }
+
   const getLatLon = () => {
     fetch(`http://api.openweathermap.org/geo/1.0/direct?q=${input}&limit=1&appid=${apiKey}`)
     .then(response => response.json())
@@ -78,7 +101,7 @@ function App() {
   return (
     <div className="App">
       <Header />
-      <Input />
+      <Input onCitySubmit={handleCity} />
       <Weather
         country={country}
         temperature={temperature}
