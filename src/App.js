@@ -1,5 +1,12 @@
 import './App.css';
 import "./stylesheets/input.css";
+import sun from './images/sunny.png';
+import sunClouds from './images/sun_clouds.png';
+import cloud from './images/clouds.png';
+import cloudRain from './images/cloud_rain.webp';
+import cloudThunder from './images/cloud_thunder.webp';
+import snowflake from './images/snowflake.png';
+import mist from './images/mist.png';
 import React, { useState, useEffect } from 'react';
 import Header from './components/header.js';
 import Weather from './components/weather.js';
@@ -17,6 +24,7 @@ function App() {
   const [max, setMax] = useState('');
   const [feels_like, setFeelsLike] = useState('');
   const [weather, setWeather] = useState('');
+  const [w_icon, setWeatherIcon] = useState('');
 
   const handleCity = (cityValue) => {
     getLatLonUser(cityValue);
@@ -90,6 +98,31 @@ function App() {
         setMax(`Max: ${temp_max}ºC`);
         setTemperature(Math.trunc(data.main.temp)+'ºC');
         setWeather(data.weather[0].main);
+        
+        const icon = data.weather[0].icon;
+        
+        if(icon === '01d'){
+          setWeatherIcon(sun);
+        }
+        else if(icon === '02d'){
+          setWeatherIcon(sunClouds);
+        }
+        else if(icon === '04d' || icon === '03d'){
+          setWeatherIcon(cloud);
+        }
+        else if(icon === '09d' || icon === '10d'){
+          setWeatherIcon(cloudRain);
+        }
+        else if(icon === '11d'){
+          setWeatherIcon(cloudThunder);
+        }
+        else if(icon === '13d'){
+          setWeatherIcon(snowflake);
+        }
+        else if(icon === '50d'){
+          setWeatherIcon(mist);
+        }
+
       })
       .catch(error => console.error('Error fetching weather data:', error));
   };
@@ -110,6 +143,7 @@ function App() {
         weather={weather}
         min={min}
         max={max}
+        w_icon={w_icon}
       />
     </div>
   );

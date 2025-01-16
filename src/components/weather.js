@@ -1,5 +1,4 @@
 import React from "react";
-import sun from '../images/sunny.png';
 
 function Weather(props){
 
@@ -9,8 +8,8 @@ function Weather(props){
         <p className="fs-3 text-white fw-medium">{props.country}</p>
         <p className="fs-6 text-white">{props.date}</p>
         <div className="d-flex align-items-center justify-content-center">
-          <img className="weather-icon" src={sun}/>
-          <p className="fs-1 fw-bold text-white">{props.temperature}<br></br>{props.weather}</p>
+          <img className="weather-icon" src={props.w_icon}/>
+          <p className="fs-1 fw-bold text-white mx-2">{props.temperature}<br></br>{props.weather}</p>
         </div>
         <div className="d-flex justify-content-center">
           <p className="fs-3 text-white px-3">{props.min}</p>
