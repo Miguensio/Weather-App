@@ -7,6 +7,9 @@ import cloudRain from './images/cloud_rain.webp';
 import cloudThunder from './images/cloud_thunder.webp';
 import snowflake from './images/snowflake.png';
 import mist from './images/mist.png';
+import moon from './images/night.png';
+import moonCloud from './images/night_cloud.png';
+import moonRain from './images/night_rain.png';
 import React, { useState, useEffect } from 'react';
 import Header from './components/header.js';
 import Weather from './components/weather.js';
@@ -104,22 +107,28 @@ function App() {
         if(icon === '01d'){
           setWeatherIcon(sun);
         }
+        else if(icon === '01n'){
+          setWeatherIcon(moon);
+        }
         else if(icon === '02d'){
           setWeatherIcon(sunClouds);
         }
-        else if(icon === '04d' || icon === '03d'){
+        else if(icon === '02n'){
+          setWeatherIcon(moonCloud);
+        }
+        else if(icon === '04d' || icon === '03d' || icon === '04n' || icon === '03n'){
           setWeatherIcon(cloud);
         }
-        else if(icon === '09d' || icon === '10d'){
+        else if(icon === '09d' || icon === '10d' || icon === '09n' || icon === '10n'){
           setWeatherIcon(cloudRain);
         }
-        else if(icon === '11d'){
+        else if(icon === '11d' || icon === '11n'){
           setWeatherIcon(cloudThunder);
         }
-        else if(icon === '13d'){
+        else if(icon === '13d' || icon === '13n'){
           setWeatherIcon(snowflake);
         }
-        else if(icon === '50d'){
+        else if(icon === '50d' || icon === '50n'){
           setWeatherIcon(mist);
         }
 
