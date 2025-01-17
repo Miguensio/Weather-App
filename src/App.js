@@ -9,7 +9,6 @@ import snowflake from './images/snowflake.png';
 import mist from './images/mist.png';
 import moon from './images/night.png';
 import moonCloud from './images/night_cloud.png';
-import moonRain from './images/night_rain.png';
 import React, { useState, useEffect } from 'react';
 import Header from './components/header.js';
 import Weather from './components/weather.js';
@@ -18,7 +17,7 @@ import Input from './components/input.js';
 function App() {
 
   const apiKey = '68b7dbce6dc6442cd77d180b9c26026d';
-  const input = 'Caracas';
+  const input = 'Orlando';
 
   const [country, setCountry] = useState('');
   const [temperature, setTemperature] = useState('');
@@ -69,6 +68,10 @@ function App() {
 
     })
     .catch(error => console.log(error))
+  }
+
+  function getUserLocation(lat, lon){
+    getTemperature(`https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lon}&appid=${apiKey}&units=metric`);
   }
 
   const getDate = () => {
@@ -137,7 +140,33 @@ function App() {
   };
 
   useEffect(() => {
-    getLatLon();
+
+    if("geolocation" in navigator){
+      navigator.geolocation.getCurrentPosition(
+        (position) => {
+          const { latitude, longitude } = position.coords;
+
+          fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${latitude}&lon=${longitude}`)
+            .then((response) => response.json())
+            .then((data) => {
+              console.log('geolocalización: ', data);
+              setCountry(data.display_name);
+              getUserLocation(latitude, longitude);
+            })
+
+            .catch((error) => {
+              console.log(error);
+            });
+
+        },
+        (error) => console.log(error)
+      );
+    } 
+    else{
+      console.log("el usuario no posee geolocalización");
+      getLatLon();
+    }
+
   }, []);
 
   return (

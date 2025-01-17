@@ -4,7 +4,7 @@ function Weather(props){
 
   return(
     <div className="d-flex justify-content-center">
-      <div className="container text-center my-5">
+      <div className="container text-center my-3">
         <p className="fs-3 text-white fw-medium">{props.country}</p>
         <p className="fs-6 text-white">{props.date}</p>
         <div className="d-flex align-items-center justify-content-center">
