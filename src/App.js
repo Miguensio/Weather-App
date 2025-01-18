@@ -13,6 +13,7 @@ import React, { useState, useEffect } from 'react';
 import Header from './components/header.js';
 import Weather from './components/weather.js';
 import Input from './components/input.js';
+import Loading from './components/loading.js';
 
 function App() {
 
@@ -27,8 +28,10 @@ function App() {
   const [feels_like, setFeelsLike] = useState('');
   const [weather, setWeather] = useState('');
   const [w_icon, setWeatherIcon] = useState('');
+  const [loading, setLoadingState] = useState(false);
 
   const handleCity = (cityValue) => {
+    setLoadingState(true);
     getLatLonUser(cityValue);
   }
 
@@ -135,6 +138,8 @@ function App() {
           setWeatherIcon(mist);
         }
 
+        setLoadingState(false);
+
       })
       .catch(error => console.error('Error fetching weather data:', error));
   };
@@ -145,7 +150,7 @@ function App() {
       navigator.geolocation.getCurrentPosition(
         (position) => {
           const { latitude, longitude } = position.coords;
-
+          setLoadingState(true);
           fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${latitude}&lon=${longitude}`)
             .then((response) => response.json())
             .then((data) => {
@@ -164,25 +169,32 @@ function App() {
     } 
     else{
       console.log("el usuario no posee geolocalización");
+      setLoadingState(true);
       getLatLon();
     }
 
   }, []);
-
+  
   return (
     <div className="App">
-      <Header />
-      <Input onCitySubmit={handleCity} />
-      <Weather
-        country={country}
-        temperature={temperature}
-        date={dateHook}
-        feels_like={feels_like}
-        weather={weather}
-        min={min}
-        max={max}
-        w_icon={w_icon}
-      />
+      {loading ? (
+        <Loading />
+      ) : (
+        <>
+          <Header />
+          <Input onCitySubmit={handleCity} />
+          <Weather
+            country={country}
+            temperature={temperature}
+            date={dateHook}
+            feels_like={feels_like}
+            weather={weather}
+            min={min}
+            max={max}
+            w_icon={w_icon}
+          />
+        </>
+      )}
     </div>
   );
 }
