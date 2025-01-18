@@ -30,11 +30,13 @@ function App() {
   const [w_icon, setWeatherIcon] = useState('');
   const [loading, setLoadingState] = useState(false);
 
+  //function to handle user city input
   const handleCity = (cityValue) => {
     setLoadingState(true);
     getLatLonUser(cityValue);
   }
 
+  //function to get the weather in the city the user inputted
   const getLatLonUser = (cityValue) => {
     fetch(`http://api.openweathermap.org/geo/1.0/direct?q=${cityValue}&limit=1&appid=${apiKey}`)
     .then(response => response.json())
@@ -48,12 +50,16 @@ function App() {
 
       setCountry(`${city} ${country}`);
 
-      getTemperature(`https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lon}&appid=${apiKey}&units=metric`);
+      getWeather(`https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lon}&appid=${apiKey}&units=metric`);
 
     })
-    .catch(error => console.log(error))
+    .catch(error => {
+      console.error(error);
+      setLoadingState(false);
+    })
   }
 
+  //function to get latitude and longitude of the inputted city
   const getLatLon = () => {
     fetch(`http://api.openweathermap.org/geo/1.0/direct?q=${input}&limit=1&appid=${apiKey}`)
     .then(response => response.json())
@@ -67,14 +73,18 @@ function App() {
 
       setCountry(`${city} ${country}`);
 
-      getTemperature(`https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lon}&appid=${apiKey}&units=metric`);
+      getWeather(`https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lon}&appid=${apiKey}&units=metric`);
 
     })
-    .catch(error => console.log(error))
+    .catch(error => {
+      console.error(error);
+      setLoadingState(false);
+    })
   }
 
+  //function to get the weather in the geolocation of the user visitting the app
   function getUserLocation(lat, lon){
-    getTemperature(`https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lon}&appid=${apiKey}&units=metric`);
+    getWeather(`https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lon}&appid=${apiKey}&units=metric`);
   }
 
   const getDate = () => {
@@ -90,7 +100,8 @@ function App() {
     setDate(`${weekDay}, ${monthName} ${day}`);
   }
 
-  const getTemperature = (url) => {
+  //function to get the weather
+  const getWeather = (url) => {
     fetch(url)
       .then(response => response.json())
       .then(data => {
@@ -141,7 +152,10 @@ function App() {
         setLoadingState(false);
 
       })
-      .catch(error => console.error('Error fetching weather data:', error));
+      .catch(error => {
+        console.error('Error fetching weather data:', error);
+        setLoadingState(false);
+      });
   };
 
   useEffect(() => {
@@ -161,6 +175,7 @@ function App() {
 
             .catch((error) => {
               console.log(error);
+              setLoadingState(false);
             });
 
         },
