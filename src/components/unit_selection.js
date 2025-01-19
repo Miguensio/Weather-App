@@ -1,6 +1,7 @@
 import React from "react";
+import '../stylesheets/unit_selection.css';
 
-function UnitSelection({ onUnitChange }){
+function UnitSelection({ onUnitChange, unitsValue }){
 
 	function handleUnitSelection(e){
 		const unit = e.target.value;
@@ -17,8 +18,7 @@ function UnitSelection({ onUnitChange }){
 	}
 
   return(
-		<select className="form-select unit-selection text-center" onChange={handleUnitSelection}>
-			<option>Select a unit</option>
+		<select className="form-select unit-selection border border-primary-subtle" onChange={handleUnitSelection} value={unitsValue}>
 			<option value={'metric'}>Celsius</option>
 			<option value={'imperial'}>Farenheit</option>
 			<option value={'standard'}>Kelvin</option>

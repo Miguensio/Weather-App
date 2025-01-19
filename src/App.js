@@ -9,7 +9,7 @@ import snowflake from './images/snowflake.png';
 import mist from './images/mist.png';
 import moon from './images/night.png';
 import moonCloud from './images/night_cloud.png';
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import Header from './components/header.js';
 import Weather from './components/weather.js';
 import Input from './components/input.js';
@@ -17,6 +17,7 @@ import Loading from './components/loading.js';
 import UnitSelection from './components/unit_selection.js';
 
 function App() {
+  const hasMounted = useRef(false);
 
   const apiKey = '68b7dbce6dc6442cd77d180b9c26026d';
   const input = 'Orlando';
@@ -216,9 +217,13 @@ function App() {
   }, []);
 
   useEffect(() => {
-    console.log(units);
-    getWeather(`https://api.openweathermap.org/data/2.5/weather?lat=${latitude}&lon=${longitude}&appid=${apiKey}&units=${units}`);
-  }, [units])
+    if(hasMounted.current){
+      getWeather(`https://api.openweathermap.org/data/2.5/weather?lat=${latitude}&lon=${longitude}&appid=${apiKey}&units=${units}`);
+    }
+    else{
+      hasMounted.current = true;
+    }
+  }, [units]);
   
   return (
     <div className="App">
@@ -228,7 +233,9 @@ function App() {
         <>
           <Header />
           <Input onCitySubmit={handleCity} />
-          <UnitSelection onUnitChange={changeUnit}/>
+          <UnitSelection 
+          onUnitChange={changeUnit}
+          unitsValue={units}/>
           <Weather
             country={country}
             temperature={temperature}
