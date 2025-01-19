@@ -14,6 +14,7 @@ import Header from './components/header.js';
 import Weather from './components/weather.js';
 import Input from './components/input.js';
 import Loading from './components/loading.js';
+import UnitSelection from './components/unit_selection.js';
 
 function App() {
 
@@ -29,11 +30,16 @@ function App() {
   const [weather, setWeather] = useState('');
   const [w_icon, setWeatherIcon] = useState('');
   const [loading, setLoadingState] = useState(false);
+  const [units, setUnits] = useState('metric');
 
   //function to handle user city input
   const handleCity = (cityValue) => {
     setLoadingState(true);
     getLatLonUser(cityValue);
+  }
+
+  const changeUnit = (unitValue) => {
+    setUnits(unitValue);
   }
 
   //function to get the weather in the city the user inputted
@@ -50,7 +56,7 @@ function App() {
 
       setCountry(`${city} ${country}`);
 
-      getWeather(`https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lon}&appid=${apiKey}&units=metric`);
+      getWeather(`https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lon}&appid=${apiKey}&units=${units}`);
 
     })
     .catch(error => {
@@ -73,7 +79,7 @@ function App() {
 
       setCountry(`${city} ${country}`);
 
-      getWeather(`https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lon}&appid=${apiKey}&units=metric`);
+      getWeather(`https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lon}&appid=${apiKey}&units=${units}`);
 
     })
     .catch(error => {
@@ -84,7 +90,7 @@ function App() {
 
   //function to get the weather in the geolocation of the user visitting the app
   function getUserLocation(lat, lon){
-    getWeather(`https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lon}&appid=${apiKey}&units=metric`);
+    getWeather(`https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lon}&appid=${apiKey}&units=${units}`);
   }
 
   const getDate = () => {
@@ -113,10 +119,25 @@ function App() {
         let temp_max = Math.trunc(data.main.temp_max);
         let feels = Math.trunc(data.main.feels_like);
 
-        setFeelsLike(`Feels like ${feels}ºC`);
-        setMin(`Min: ${temp_min}ºC`);
-        setMax(`Max: ${temp_max}ºC`);
-        setTemperature(Math.trunc(data.main.temp)+'ºC');
+        if(units === 'metric'){
+          setFeelsLike(`Feels like ${feels}ºC`);
+          setMin(`Min: ${temp_min}ºC`);
+          setMax(`Max: ${temp_max}ºC`);
+          setTemperature(Math.trunc(data.main.temp)+'ºC');
+        }
+        else if(units === 'imperial'){
+          setFeelsLike(`Feels like ${feels}ºF`);
+          setMin(`Min: ${temp_min}ºF`);
+          setMax(`Max: ${temp_max}ºF`);
+          setTemperature(Math.trunc(data.main.temp)+'ºF');
+        }
+        else if(units === 'standard'){
+          setFeelsLike(`Feels like ${feels}ºK`);
+          setMin(`Min: ${temp_min}ºK`);
+          setMax(`Max: ${temp_max}ºK`);
+          setTemperature(Math.trunc(data.main.temp)+'ºK');
+        }
+
         setWeather(data.weather[0].main);
         
         const icon = data.weather[0].icon;
@@ -189,6 +210,10 @@ function App() {
     }
 
   }, []);
+
+  useEffect(() => {
+    console.log(units);
+  }, [units])
   
   return (
     <div className="App">
@@ -198,6 +223,7 @@ function App() {
         <>
           <Header />
           <Input onCitySubmit={handleCity} />
+          <UnitSelection onUnitChange={changeUnit}/>
           <Weather
             country={country}
             temperature={temperature}
