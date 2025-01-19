@@ -18,7 +18,7 @@ function UnitSelection({ onUnitChange, unitsValue }){
 	}
 
   return(
-		<select className="form-select unit-selection border border-primary-subtle" onChange={handleUnitSelection} value={unitsValue}>
+		<select className="mx-1 form-select unit-selection border border-primary-subtle" onChange={handleUnitSelection} value={unitsValue}>
 			<option value={'metric'}>Celsius</option>
 			<option value={'imperial'}>Farenheit</option>
 			<option value={'standard'}>Kelvin</option>

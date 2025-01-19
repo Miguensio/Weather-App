@@ -4,6 +4,11 @@
     object-fit: contain;
 }
 
+.selections{
+    display: flex;
+    justify-content: center;
+}
+
 .App{
     font-family: sans-serif;
 }

@@ -15,6 +15,7 @@ import Weather from './components/weather.js';
 import Input from './components/input.js';
 import Loading from './components/loading.js';
 import UnitSelection from './components/unit_selection.js';
+import LanguageSelection from './components/language_selection.js';
 
 function App() {
   const hasMounted = useRef(false);
@@ -34,6 +35,7 @@ function App() {
   const [longitude, setLongitude] = useState('');
   const [loading, setLoadingState] = useState(false);
   const [units, setUnits] = useState('metric');
+  const [language, setLanguage] = useState('en');
 
   //function to handle user city input
   const handleCity = (cityValue) => {
@@ -43,6 +45,10 @@ function App() {
 
   const changeUnit = (unitValue) => {
     setUnits(unitValue);
+  }
+
+  const changeLanguage = (langValue) => {
+    setUnits(langValue);
   }
 
   //function to get the weather in the city the user inputted
@@ -232,10 +238,17 @@ function App() {
       ) : (
         <>
           <Header />
+
           <Input onCitySubmit={handleCity} />
-          <UnitSelection 
-          onUnitChange={changeUnit}
-          unitsValue={units}/>
+          <div className='selections'>
+            <UnitSelection 
+            onUnitChange={changeUnit}
+            unitsValue={units}/>
+
+            <LanguageSelection
+            onLanguageChange={changeLanguage}
+            language={language}/>
+          </div>
           <Weather
             country={country}
             temperature={temperature}
