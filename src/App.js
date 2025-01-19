@@ -48,7 +48,7 @@ function App() {
   }
 
   const changeLanguage = (langValue) => {
-    setUnits(langValue);
+    setLanguage(langValue);
   }
 
   //function to get the weather in the city the user inputted
@@ -65,7 +65,7 @@ function App() {
 
       setCountry(`${city} ${country}`);
 
-      getWeather(`https://api.openweathermap.org/data/2.5/weather?lat=${latitude}&lon=${longitude}&appid=${apiKey}&units=${units}`);
+      getWeather(`https://api.openweathermap.org/data/2.5/weather?lat=${latitude}&lon=${longitude}&appid=${apiKey}&units=${units}&lang=${language}`);
 
     })
     .catch(error => {
@@ -88,7 +88,7 @@ function App() {
 
       setCountry(`${city} ${country}`);
 
-      getWeather(`https://api.openweathermap.org/data/2.5/weather?lat=${latitude}&lon=${longitude}&appid=${apiKey}&units=${units}`);
+      getWeather(`https://api.openweathermap.org/data/2.5/weather?lat=${latitude}&lon=${longitude}&appid=${apiKey}&units=${units}&lang=${language}`);
 
     })
     .catch(error => {
@@ -99,20 +99,28 @@ function App() {
 
   //function to get the weather in the geolocation of the user visitting the app
   function getUserLocation(lat, lon){
-    getWeather(`https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lon}&appid=${apiKey}&units=${units}`);
+    getWeather(`https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lon}&appid=${apiKey}&units=${units}&lang=${language}`);
   }
 
   const getDate = () => {
     const date = new Date();
 
-    const months = ['January','February','March','April','May','June','July','August','September','October','November','December'];
-    const daysWeek = ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
-
-    let monthName = months[date.getMonth()];
-    let weekDay = daysWeek[date.getDay()];
-    let day = date.getDate();
-
-    setDate(`${weekDay}, ${monthName} ${day}`);
+    if(language === 'en'){
+      const months = ['January','February','March','April','May','June','July','August','September','October','November','December'];
+      const daysWeek = ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
+      let monthName = months[date.getMonth()];
+      let weekDay = daysWeek[date.getDay()];
+      let day = date.getDate();
+      setDate(`${weekDay}, ${monthName} ${day}`);
+    }
+    else if(language === 'es'){
+      const months = ['Enero','Febrero','Marzo','Abril','Mayo','Junio','Julio','Agosto','Septiembre','Octubre','Noviembre','Diciembre'];
+      const daysWeek = ['Domingo','Lunes','Martes','Miércoles','Jueves','Viernes','Sábado'];
+      let monthName = months[date.getMonth()];
+      let weekDay = daysWeek[date.getDay()];
+      let day = date.getDate();
+      setDate(`${weekDay}, ${monthName} ${day}`);
+    }
   }
 
   //function to get the weather
@@ -129,25 +137,74 @@ function App() {
         let feels = Math.trunc(data.main.feels_like);
 
         if(units === 'metric'){
-          setFeelsLike(`Feels like ${feels}ºC`);
-          setMin(`Min: ${temp_min}ºC`);
-          setMax(`Max: ${temp_max}ºC`);
-          setTemperature(Math.trunc(data.main.temp)+'ºC');
+          if(language === 'es'){
+            setFeelsLike(`Sensación: ${feels}ºC`);
+            setMin(`Min: ${temp_min}ºC`);
+            setMax(`Max: ${temp_max}ºC`);
+            setTemperature(Math.trunc(data.main.temp)+'ºC');
+          }
+          else{
+            setFeelsLike(`Feels like ${feels}ºC`);
+            setMin(`Min: ${temp_min}ºC`);
+            setMax(`Max: ${temp_max}ºC`);
+            setTemperature(Math.trunc(data.main.temp)+'ºC');
+          }
         }
         else if(units === 'imperial'){
-          setFeelsLike(`Feels like ${feels}ºF`);
-          setMin(`Min: ${temp_min}ºF`);
-          setMax(`Max: ${temp_max}ºF`);
-          setTemperature(Math.trunc(data.main.temp)+'ºF');
+          if(language === 'es'){
+            setFeelsLike(`Sensación: ${feels}ºF`);
+            setMin(`Min: ${temp_min}ºF`);
+            setMax(`Max: ${temp_max}ºF`);
+            setTemperature(Math.trunc(data.main.temp)+'ºF');
+          }
+          else{
+            setFeelsLike(`Feels like ${feels}ºF`);
+            setMin(`Min: ${temp_min}ºF`);
+            setMax(`Max: ${temp_max}ºF`);
+            setTemperature(Math.trunc(data.main.temp)+'ºF');
+          }
         }
         else if(units === 'standard'){
-          setFeelsLike(`Feels like ${feels}ºK`);
-          setMin(`Min: ${temp_min}ºK`);
-          setMax(`Max: ${temp_max}ºK`);
-          setTemperature(Math.trunc(data.main.temp)+'ºK');
+          if(language === 'es'){
+            setFeelsLike(`Sensación: ${feels}ºK`);
+            setMin(`Min: ${temp_min}ºK`);
+            setMax(`Max: ${temp_max}ºK`);
+            setTemperature(Math.trunc(data.main.temp)+'ºK');
+          }
+          else{
+            setFeelsLike(`Feels like ${feels}ºK`);
+            setMin(`Min: ${temp_min}ºK`);
+            setMax(`Max: ${temp_max}ºK`);
+            setTemperature(Math.trunc(data.main.temp)+'ºK');
+          }
         }
 
-        setWeather(data.weather[0].main);
+        if(language === 'es'){
+          if(data.weather[0].main === 'Clouds'){
+            setWeather('Nubes');
+          }
+          else if(data.weather[0].main === 'Clear'){
+            setWeather('Despejado');
+          }
+          else if(data.weather[0].main === 'Mist'){
+            setWeather('Neblina');
+          }
+          else if(data.weather[0].main === 'Snow'){
+            setWeather('Nieve');
+          }
+          else if(data.weather[0].main === 'Rain'){
+            setWeather('Lluvia');
+          }
+          else if(data.weather[0].main === 'Drizzle'){
+            setWeather('Llovizna');
+          }
+          else if(data.weather[0].main === 'Thunderstorm'){
+            setWeather('Tormenta');
+          }
+        }
+        else{
+          setWeather(data.weather[0].main);
+        }
         
         const icon = data.weather[0].icon;
         
@@ -223,13 +280,14 @@ function App() {
   }, []);
 
   useEffect(() => {
+    console.log(language);
     if(hasMounted.current){
-      getWeather(`https://api.openweathermap.org/data/2.5/weather?lat=${latitude}&lon=${longitude}&appid=${apiKey}&units=${units}`);
+      getWeather(`https://api.openweathermap.org/data/2.5/weather?lat=${latitude}&lon=${longitude}&appid=${apiKey}&units=${units}&lang=${language}`);
     }
     else{
       hasMounted.current = true;
     }
-  }, [units]);
+  }, [units,language]);
   
   return (
     <div className="App">
