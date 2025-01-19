@@ -31,6 +31,8 @@ function App() {
   const [feels_like, setFeelsLike] = useState('');
   const [weather, setWeather] = useState('');
   const [w_icon, setWeatherIcon] = useState('');
+  const [description, setDescription] = useState('');
+  const [inputtedCity, setCity] = useState('');
   const [latitude, setLatitude] = useState('');
   const [longitude, setLongitude] = useState('');
   const [loading, setLoadingState] = useState(false);
@@ -40,7 +42,7 @@ function App() {
   //function to handle user city input
   const handleCity = (cityValue) => {
     setLoadingState(true);
-    getLatLonUser(cityValue);
+    setCity(cityValue);
   }
 
   const changeUnit = (unitValue) => {
@@ -52,20 +54,22 @@ function App() {
   }
 
   //function to get the weather in the city the user inputted
-  const getLatLonUser = (cityValue) => {
-    fetch(`http://api.openweathermap.org/geo/1.0/direct?q=${cityValue}&limit=1&appid=${apiKey}`)
+  const getLatLonUser = () => {
+    fetch(`http://api.openweathermap.org/geo/1.0/direct?q=${inputtedCity}&limit=1&appid=${apiKey}`)
     .then(response => response.json())
     .then(data => {
       console.log(data);
       
       let country = data[0].country;
       let city = data[0].name;
+      let lat = data[0].lat;
+      let lon = data[0].lon;
       setLatitude(data[0].lat);
       setLongitude(data[0].lon);
 
       setCountry(`${city} ${country}`);
 
-      getWeather(`https://api.openweathermap.org/data/2.5/weather?lat=${latitude}&lon=${longitude}&appid=${apiKey}&units=${units}&lang=${language}`);
+      getWeather(`https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lon}&appid=${apiKey}&units=${units}&lang=${language}`);
 
     })
     .catch(error => {
@@ -143,7 +147,7 @@ function App() {
             setMax(`Max: ${temp_max}ºC`);
             setTemperature(Math.trunc(data.main.temp)+'ºC');
           }
-          else{
+          else if(language === 'en'){
             setFeelsLike(`Feels like ${feels}ºC`);
             setMin(`Min: ${temp_min}ºC`);
             setMax(`Max: ${temp_max}ºC`);
@@ -157,7 +161,7 @@ function App() {
             setMax(`Max: ${temp_max}ºF`);
             setTemperature(Math.trunc(data.main.temp)+'ºF');
           }
-          else{
+          else if(language === 'en'){
             setFeelsLike(`Feels like ${feels}ºF`);
             setMin(`Min: ${temp_min}ºF`);
             setMax(`Max: ${temp_max}ºF`);
@@ -171,7 +175,7 @@ function App() {
             setMax(`Max: ${temp_max}ºK`);
             setTemperature(Math.trunc(data.main.temp)+'ºK');
           }
-          else{
+          else if(language === 'en'){
             setFeelsLike(`Feels like ${feels}ºK`);
             setMin(`Min: ${temp_min}ºK`);
             setMax(`Max: ${temp_max}ºK`);
@@ -180,6 +184,7 @@ function App() {
         }
 
         if(language === 'es'){
+          setDescription(data.weather[0].description.charAt(0).toUpperCase() + data.weather[0].description.slice(1));
           if(data.weather[0].main === 'Clouds'){
             setWeather('Nubes');
           }
@@ -202,7 +207,8 @@ function App() {
             setWeather('Tormenta');
           }
         }
-        else{
+        else if(language === 'en'){
+          setDescription(data.weather[0].description.charAt(0).toUpperCase() + data.weather[0].description.slice(1));
           setWeather(data.weather[0].main);
         }
         
@@ -280,6 +286,26 @@ function App() {
   }, []);
 
   useEffect(() => {
+    console.log(units);
+    if(hasMounted.current){
+      getWeather(`https://api.openweathermap.org/data/2.5/weather?lat=${latitude}&lon=${longitude}&appid=${apiKey}&units=${units}&lang=${language}`);
+    }
+    else{
+      hasMounted.current = true;
+    }
+  }, [units]);
+
+  useEffect(() => {
+    console.log(inputtedCity);
+    if(hasMounted.current){
+      getLatLonUser();
+    }
+    else{
+      hasMounted.current = true;
+    }
+  }, [inputtedCity]);
+
+  useEffect(() => {
     console.log(language);
     if(hasMounted.current){
       getWeather(`https://api.openweathermap.org/data/2.5/weather?lat=${latitude}&lon=${longitude}&appid=${apiKey}&units=${units}&lang=${language}`);
@@ -287,7 +313,7 @@ function App() {
     else{
       hasMounted.current = true;
     }
-  }, [units,language]);
+  }, [language]);
   
   return (
     <div className="App">
@@ -311,6 +337,7 @@ function App() {
             country={country}
             temperature={temperature}
             date={dateHook}
+            description={description}
             feels_like={feels_like}
             weather={weather}
             min={min}
