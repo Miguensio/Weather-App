@@ -39,6 +39,8 @@ function App() {
   const [loading, setLoadingState] = useState(false);
   const [units, setUnits] = useState('metric');
   const [language, setLanguage] = useState('en');
+  const [errorMessage, setErrorMessage] = useState('');
+  const [errorExists, setError] = useState(false);
 
   //function to handle user city input
   const handleCity = (cityValue) => {
@@ -61,6 +63,18 @@ function App() {
     .then(data => {
       console.log(data);
       
+      if(data.length === 0){
+        console.log("City not found");
+        if(language === 'en'){
+          setErrorMessage("The city you introduced could not be found, check and try again");
+          setError(true);
+        }
+        else if(language === 'es'){
+          setErrorMessage("La ciudad que introdujo no se pudo encontrar, revise e intente de nuevo");
+          setError(true);
+        }
+      }
+
       let country = data[0].country;
       let city = data[0].name;
       let lat = data[0].lat;
@@ -133,6 +147,7 @@ function App() {
     fetch(url)
       .then(response => response.json())
       .then(data => {
+        
         console.log(data);
 
         getDate();
@@ -295,7 +310,7 @@ function App() {
 
   useEffect(() => {
     if(mounted){
-      console.log("inputtedCity");
+      console.log(inputtedCity);
       getLatLonUser();
     }
   }, [inputtedCity]);
@@ -306,6 +321,21 @@ function App() {
       getWeather(`https://api.openweathermap.org/data/2.5/weather?lat=${latitude}&lon=${longitude}&appid=${apiKey}&units=${units}&lang=${language}`);
     }
   }, [language]);
+
+  useEffect(() => {
+    if(mounted){
+      if(errorExists === true){
+        console.log("hacer que aparezca");
+        const errorPopUp = document.querySelector('.error-area');
+        errorPopUp.classList.remove('hide');
+        setTimeout(()=>{
+          console.log("hacer que desaparezca");
+          errorPopUp.classList.add('hide');
+          setError(false);
+        },5000)
+      }
+    }
+  }, [errorExists]);
 
   useEffect(() => {
     isMounted(true);
@@ -340,7 +370,10 @@ function App() {
             max={max}
             w_icon={w_icon}
           />
-          <ErrorMessage/>
+          <div className='error-area hide'>
+            <ErrorMessage
+            message={errorMessage}/>
+          </div>
         </>
       )}
     </div>

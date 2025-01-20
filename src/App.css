@@ -12,3 +12,7 @@
 .App{
     font-family: sans-serif;
 }
+
+.hide{
+    display: none;
+}
