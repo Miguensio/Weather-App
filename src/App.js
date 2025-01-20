@@ -88,6 +88,14 @@ function App() {
 
     })
     .catch(error => {
+      if(language === 'en'){
+        setErrorMessage("There was an error fetching the city introduced, please try again");
+        setError(true);
+      }
+      else if(language === 'es'){
+        setErrorMessage("Hubo un error obteniendo la ciudad que introdujo, por favor intente de nuevo");
+        setError(true);
+      }
       console.error(error);
       setLoadingState(false);
     })
@@ -111,6 +119,14 @@ function App() {
 
     })
     .catch(error => {
+      if(language === 'en'){
+        setErrorMessage("There was an error fetching the location's data, please try again");
+        setError(true);
+      }
+      else if(language === 'es'){
+        setErrorMessage("Hubo un error obteniendo los datos del lugar, por favor intente de nuevo");
+        setError(true);
+      }
       console.error(error);
       setLoadingState(false);
     })
@@ -262,6 +278,14 @@ function App() {
 
       })
       .catch(error => {
+        if(language === 'en'){
+          setErrorMessage("There was an error fetching the weather data, please try again");
+          setError(true);
+        }
+        else if(language === 'es'){
+          setErrorMessage("Hubo un error obteniendo los datos del clima, por favor intente de nuevo");
+          setError(true);
+        }
         console.error('Error fetching weather data:', error);
         setLoadingState(false);
       });
@@ -285,12 +309,30 @@ function App() {
             })
 
             .catch((error) => {
+              if(language === 'en'){
+                setErrorMessage("There was an error fetching the geolocalitation data");
+                setError(true);
+              }
+              else if(language === 'es'){
+                setErrorMessage("Hubo un error obteniendo los datos de geolocalización");
+                setError(true);
+              }
               console.log(error);
               setLoadingState(false);
             });
 
         },
-        (error) => console.log(error)
+        (error) => {
+          if(language === 'en'){
+            setErrorMessage("There was an error fetching the geolocalitation data");
+            setError(true);
+          }
+          else if(language === 'es'){
+            setErrorMessage("Hubo un error obteniendo los datos de geolocalización");
+            setError(true);
+          }
+          console.log(error);
+        }
       );
     } 
     else{
