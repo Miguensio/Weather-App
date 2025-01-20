@@ -16,9 +16,10 @@ import Input from './components/input.js';
 import Loading from './components/loading.js';
 import UnitSelection from './components/unit_selection.js';
 import LanguageSelection from './components/language_selection.js';
+import ErrorMessage from './components/error_message.js';
 
 function App() {
-  const hasMounted = useRef(false);
+  const [mounted, isMounted] = useState(false);
 
   const apiKey = '68b7dbce6dc6442cd77d180b9c26026d';
   const input = 'Orlando';
@@ -286,34 +287,29 @@ function App() {
   }, []);
 
   useEffect(() => {
-    console.log(units);
-    if(hasMounted.current){
+    if(mounted){
+      console.log("units");
       getWeather(`https://api.openweathermap.org/data/2.5/weather?lat=${latitude}&lon=${longitude}&appid=${apiKey}&units=${units}&lang=${language}`);
-    }
-    else{
-      hasMounted.current = true;
     }
   }, [units]);
 
   useEffect(() => {
-    console.log(inputtedCity);
-    if(hasMounted.current){
+    if(mounted){
+      console.log("inputtedCity");
       getLatLonUser();
-    }
-    else{
-      hasMounted.current = true;
     }
   }, [inputtedCity]);
 
   useEffect(() => {
-    console.log(language);
-    if(hasMounted.current){
+    if(mounted){
+      console.log("language");
       getWeather(`https://api.openweathermap.org/data/2.5/weather?lat=${latitude}&lon=${longitude}&appid=${apiKey}&units=${units}&lang=${language}`);
     }
-    else{
-      hasMounted.current = true;
-    }
   }, [language]);
+
+  useEffect(() => {
+    isMounted(true);
+  });
   
   return (
     <div className="App">
@@ -344,6 +340,7 @@ function App() {
             max={max}
             w_icon={w_icon}
           />
+          <ErrorMessage/>
         </>
       )}
     </div>
