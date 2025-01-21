@@ -20,6 +20,7 @@ import ErrorMessage from './components/error_message.js';
 
 function App() {
   const [mounted, isMounted] = useState(false);
+  const errorRef = useRef(null);
 
   const apiKey = '68b7dbce6dc6442cd77d180b9c26026d';
   const input = 'Orlando';
@@ -376,13 +377,11 @@ function App() {
 
   //shows an error message for 5 seconds when an error occurs
   useEffect(() => {
-    if(mounted){
-      if(errorExists === true){
-        const errorPopUp = document.querySelector('.error-area');
-        errorPopUp.classList.remove('hide');
+    if(mounted && errorExists === true){
+      if(errorRef.current){
+        errorRef.current.classList.remove('hide');
         setTimeout(()=>{
-          console.log("hacer que desaparezca");
-          errorPopUp.classList.add('hide');
+          errorRef.current.classList.add('hide');
           setError(false);
         },5000)
       }
@@ -429,7 +428,7 @@ function App() {
           rights={rights}
           contact={contact} />
 
-          <div className='error-area hide'>
+          <div className='error-area hide' ref={errorRef}>
             <ErrorMessage
             message={errorMessage} />
           </div>
