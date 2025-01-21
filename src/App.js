@@ -31,7 +31,7 @@ function App() {
   const [max, setMax] = useState('');
   const [feels_like, setFeelsLike] = useState('');
   const [weather, setWeather] = useState('');
-  const [w_icon, setWeatherIcon] = useState('');
+  const [w_icon, setWeatherIcon] = useState(null);
   const [description, setDescription] = useState('');
   const [inputtedCity, setCity] = useState('');
   const [latitude, setLatitude] = useState('');
@@ -329,6 +329,7 @@ function App() {
             setErrorMessage("Hubo un error obteniendo los datos de geolocalización");
             setError(true);
           }
+          getLatLon();
           console.log(error);
         }
       );

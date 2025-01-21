@@ -8,7 +8,7 @@ function Weather(props){
         <p className="fs-3 text-white fw-medium">{props.country}</p>
         <p className="fs-6 text-white">{props.date}</p>
         <div className="d-flex align-items-center justify-content-center">
-          <img className="weather-icon" src={props.w_icon}/>
+          <img className="weather-icon" src={props.w_icon} alt={props.weather}/>
           <p className="fs-1 fw-bold text-white mx-2">{props.temperature}<br></br>{props.weather}</p>
         </div>
         <p className="fs-4 text-white">{props.description}</p>
