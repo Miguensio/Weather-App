@@ -154,7 +154,7 @@ function App() {
       let monthName = months[date.getMonth()];
       let weekDay = daysWeek[date.getDay()];
       let day = date.getDate();
-      setDate(`${weekDay}, ${monthName} ${day}`);
+      setDate(`${weekDay}, ${day} de ${monthName}`);
     }
   }
 
