@@ -61,7 +61,7 @@ function App() {
 
   //function to get the weather in the city the user inputted
   const getLatLonUser = () => {
-    fetch(`http://api.openweathermap.org/geo/1.0/direct?q=${inputtedCity}&limit=1&appid=${apiKey}`)
+    fetch(`https://api.openweathermap.org/geo/1.0/direct?q=${inputtedCity}&limit=1&appid=${apiKey}`)
     .then(response => response.json())
     .then(data => {
       
@@ -105,7 +105,7 @@ function App() {
 
   //function to get latitude and longitude of the inputted city
   const getLatLon = () => {
-    fetch(`http://api.openweathermap.org/geo/1.0/direct?q=${input}&limit=1&appid=${apiKey}`)
+    fetch(`https://api.openweathermap.org/geo/1.0/direct?q=${input}&limit=1&appid=${apiKey}`)
     .then(response => response.json())
     .then(data => {
       
