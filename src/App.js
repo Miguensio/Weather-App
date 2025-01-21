@@ -43,6 +43,7 @@ function App() {
   const [errorExists, setError] = useState(false);
   const [contact, setContact] = useState('Contact: miguelraazbarajas@gmail.com');
   const [rights, setRights] = useState('2025 Miguel Raaz. All rights reserved.');
+  const [placeholderText, setPlaceholder] = useState('Input a city');
 
   //function to handle user city input
   const handleCity = (cityValue) => {
@@ -63,7 +64,6 @@ function App() {
     fetch(`http://api.openweathermap.org/geo/1.0/direct?q=${inputtedCity}&limit=1&appid=${apiKey}`)
     .then(response => response.json())
     .then(data => {
-      console.log(data);
       
       if(data.length === 0){
         console.log("City not found");
@@ -108,7 +108,6 @@ function App() {
     fetch(`http://api.openweathermap.org/geo/1.0/direct?q=${input}&limit=1&appid=${apiKey}`)
     .then(response => response.json())
     .then(data => {
-      console.log(data);
       
       let country = data[0].country;
       let city = data[0].name;
@@ -165,9 +164,6 @@ function App() {
     fetch(url)
       .then(response => response.json())
       .then(data => {
-        
-        console.log(data);
-
         getDate();
 
         let temp_min = Math.trunc(data.main.temp_min);
@@ -293,7 +289,9 @@ function App() {
       });
   };
 
+  //get geolocation on load
   useEffect(() => {
+    setLoadingState(true);
 
     if("geolocation" in navigator){
       navigator.geolocation.getCurrentPosition(
@@ -301,11 +299,9 @@ function App() {
           const { latitude, longitude } = position.coords;
           setLatitude(latitude);
           setLongitude(longitude);
-          setLoadingState(true);
           fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${latitude}&lon=${longitude}`)
             .then((response) => response.json())
             .then((data) => {
-              console.log('geolocalización: ', data);
               setCountry(data.display_name);
               getUserLocation(latitude, longitude);
             })
@@ -338,46 +334,47 @@ function App() {
       );
     } 
     else{
-      console.log("el usuario no posee geolocalización");
       setLoadingState(true);
       getLatLon();
     }
 
   }, []);
 
+  //when the user changes the units, getWeather gets called with the new units value
   useEffect(() => {
     if(mounted){
-      console.log("units");
       getWeather(`https://api.openweathermap.org/data/2.5/weather?lat=${latitude}&lon=${longitude}&appid=${apiKey}&units=${units}&lang=${language}`);
     }
   }, [units]);
 
+  //when the user inputs a city and the useEffect hook changes, proceeds to get all relevant info
   useEffect(() => {
     if(mounted){
-      console.log(inputtedCity);
       getLatLonUser();
     }
   }, [inputtedCity]);
 
+  //when the user changes language all text gets changed
   useEffect(() => {
     if(mounted){
-      console.log("language");
       if(language === 'en'){
         setContact('Contact: miguelraazbarajas@gmail.com');
         setRights('2025 Miguel Raaz. All rights reserved.');
+        setPlaceholder('Input a city');
       }
       else if(language === 'es'){
         setContact('Contacto: miguelraazbarajas@gmail.com');
         setRights('2025 Miguel Raaz. Todos los derechos reservados.');
+        setPlaceholder('Introduzca una ciudad');
       }
       getWeather(`https://api.openweathermap.org/data/2.5/weather?lat=${latitude}&lon=${longitude}&appid=${apiKey}&units=${units}&lang=${language}`);
     }
   }, [language]);
 
+  //shows an error message for 5 seconds when an error occurs
   useEffect(() => {
     if(mounted){
       if(errorExists === true){
-        console.log("hacer que aparezca");
         const errorPopUp = document.querySelector('.error-area');
         errorPopUp.classList.remove('hide');
         setTimeout(()=>{
@@ -389,6 +386,7 @@ function App() {
     }
   }, [errorExists]);
 
+  //control useEffect so other useEffects aren't executed on load
   useEffect(() => {
     isMounted(true);
   });
@@ -399,16 +397,18 @@ function App() {
         <Loading />
       ) : (
         <>
-          <Input onCitySubmit={handleCity} />
+          <Input 
+          onCitySubmit={handleCity}
+          placeholderText={placeholderText} />
 
           <div className='selections'>
             <UnitSelection 
             onUnitChange={changeUnit}
-            unitsValue={units}/>
+            unitsValue={units} />
 
             <LanguageSelection
             onLanguageChange={changeLanguage}
-            language={language}/>
+            language={language} />
           </div>
 
           <Weather
@@ -420,16 +420,15 @@ function App() {
             weather={weather}
             min={min}
             max={max}
-            w_icon={w_icon}
-          />
+            w_icon={w_icon} />
 
           <Footer
           rights={rights}
-          contact={contact}/>
+          contact={contact} />
 
           <div className='error-area hide'>
             <ErrorMessage
-            message={errorMessage}/>
+            message={errorMessage} />
           </div>
         </>
       )}
