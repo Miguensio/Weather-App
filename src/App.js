@@ -10,7 +10,7 @@ import mist from './images/mist.png';
 import moon from './images/night.png';
 import moonCloud from './images/night_cloud.png';
 import React, { useState, useEffect, useRef } from 'react';
-import Header from './components/header.js';
+import Footer from './components/footer.js';
 import Weather from './components/weather.js';
 import Input from './components/input.js';
 import Loading from './components/loading.js';
@@ -41,6 +41,8 @@ function App() {
   const [language, setLanguage] = useState('en');
   const [errorMessage, setErrorMessage] = useState('');
   const [errorExists, setError] = useState(false);
+  const [contact, setContact] = useState('Contact: miguelraazbarajas@gmail.com');
+  const [rights, setRights] = useState('2025 Miguel Raaz. All rights reserved.');
 
   //function to handle user city input
   const handleCity = (cityValue) => {
@@ -360,6 +362,14 @@ function App() {
   useEffect(() => {
     if(mounted){
       console.log("language");
+      if(language === 'en'){
+        setContact('Contact: miguelraazbarajas@gmail.com');
+        setRights('2025 Miguel Raaz. All rights reserved.');
+      }
+      else if(language === 'es'){
+        setContact('Contacto: miguelraazbarajas@gmail.com');
+        setRights('2025 Miguel Raaz. Todos los derechos reservados.');
+      }
       getWeather(`https://api.openweathermap.org/data/2.5/weather?lat=${latitude}&lon=${longitude}&appid=${apiKey}&units=${units}&lang=${language}`);
     }
   }, [language]);
@@ -389,9 +399,8 @@ function App() {
         <Loading />
       ) : (
         <>
-          <Header />
-
           <Input onCitySubmit={handleCity} />
+
           <div className='selections'>
             <UnitSelection 
             onUnitChange={changeUnit}
@@ -401,6 +410,7 @@ function App() {
             onLanguageChange={changeLanguage}
             language={language}/>
           </div>
+
           <Weather
             country={country}
             temperature={temperature}
@@ -412,6 +422,11 @@ function App() {
             max={max}
             w_icon={w_icon}
           />
+
+          <Footer
+          rights={rights}
+          contact={contact}/>
+
           <div className='error-area hide'>
             <ErrorMessage
             message={errorMessage}/>
