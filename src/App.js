@@ -111,12 +111,14 @@ function App() {
       
       let country = data[0].country;
       let city = data[0].name;
+      let lat = data[0].lat;
+      let lon = data[0].lon;
       setLatitude(data[0].lat);
       setLongitude(data[0].lon);
 
       setCountry(`${city} ${country}`);
 
-      getWeather(`https://api.openweathermap.org/data/2.5/weather?lat=${latitude}&lon=${longitude}&appid=${apiKey}&units=${units}&lang=${language}`);
+      getWeather(`https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lon}&appid=${apiKey}&units=${units}&lang=${language}`);
 
     })
     .catch(error => {
