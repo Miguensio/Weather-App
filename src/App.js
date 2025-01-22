@@ -34,7 +34,7 @@ function App() {
   const [weather, setWeather] = useState('');
   const [w_icon, setWeatherIcon] = useState(null);
   const [description, setDescription] = useState('');
-  const [inputtedCity, setCity] = useState('');
+  const [inputtedCity, setCity] = useState(null);
   const [latitude, setLatitude] = useState('');
   const [longitude, setLongitude] = useState('');
   const [loading, setLoadingState] = useState(false);
@@ -48,7 +48,6 @@ function App() {
 
   //function to handle user city input
   const handleCity = (cityValue) => {
-    setLoadingState(true);
     setCity(cityValue);
   }
 
@@ -65,16 +64,19 @@ function App() {
     fetch(`https://api.openweathermap.org/geo/1.0/direct?q=${inputtedCity}&limit=1&appid=${apiKey}`)
     .then(response => response.json())
     .then(data => {
-      
       if(data.length === 0){
         console.log("City not found");
         if(language === 'en'){
           setErrorMessage("The city you introduced could not be found, check and try again");
           setError(true);
+          setLoadingState(false);
+          return
         }
         else if(language === 'es'){
           setErrorMessage("La ciudad que introdujo no se pudo encontrar, revise e intente de nuevo");
           setError(true);
+          setLoadingState(false);
+          return
         }
       }
 
@@ -295,53 +297,7 @@ function App() {
   //get geolocation on load
   useEffect(() => {
     setLoadingState(true);
-
-    if("geolocation" in navigator){
-      navigator.geolocation.getCurrentPosition(
-        (position) => {
-          const { latitude, longitude } = position.coords;
-          setLatitude(latitude);
-          setLongitude(longitude);
-          fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${latitude}&lon=${longitude}`)
-            .then((response) => response.json())
-            .then((data) => {
-              setCountry(data.display_name);
-              getUserLocation(latitude, longitude);
-            })
-
-            .catch((error) => {
-              if(language === 'en'){
-                setErrorMessage("There was an error fetching the geolocalitation data");
-                setError(true);
-              }
-              else if(language === 'es'){
-                setErrorMessage("Hubo un error obteniendo los datos de geolocalización");
-                setError(true);
-              }
-              console.log(error);
-              setLoadingState(false);
-            });
-
-        },
-        (error) => {
-          if(language === 'en'){
-            setErrorMessage("There was an error fetching the geolocalitation data");
-            setError(true);
-          }
-          else if(language === 'es'){
-            setErrorMessage("Hubo un error obteniendo los datos de geolocalización");
-            setError(true);
-          }
-          getLatLon();
-          console.log(error);
-        }
-      );
-    } 
-    else{
-      setLoadingState(true);
-      getLatLon();
-    }
-
+    getLatLon();
   }, []);
 
   //when the user changes the units, getWeather gets called with the new units value
@@ -354,7 +310,21 @@ function App() {
   //when the user inputs a city and the useEffect hook changes, proceeds to get all relevant info
   useEffect(() => {
     if(mounted){
-      getLatLonUser();
+      console.log(inputtedCity);
+      if(inputtedCity === ''){
+        if(language === 'es'){
+          setErrorMessage("No deje el campo de ciudad vacío");
+          setError(true);
+        }
+        else if(language === 'en'){
+          setErrorMessage("The city input has no value");
+          setError(true);
+        }
+      }
+      else{
+        setLoadingState(true);
+        getLatLonUser();
+      }
     }
   }, [inputtedCity]);
 

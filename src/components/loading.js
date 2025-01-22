@@ -1,7 +1,7 @@
 import React from "react";
 import '../stylesheets/loading.css';
 
-function Loading(props){
+function Loading(){
 
 	return(
 		<div className="loading-screen">
